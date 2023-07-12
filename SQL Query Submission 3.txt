@@ -1,0 +1,55 @@
+/* Query 1 -query used for first insight */
+SELECT
+    a.Title AS ProductName,
+    SUM(i.Quantity) AS TotalQuantity,
+    SUM(i.UnitPrice * i.Quantity) AS TotalRevenue
+FROM
+    album AS a
+    JOIN track AS t ON a.AlbumId = t.AlbumId
+    JOIN InvoiceLine AS i ON t.TrackId = i.TrackId
+GROUP BY
+    a.Title
+ORDER BY
+    TotalQuantity DESC, TotalRevenue DESC
+LIMIT 10;
+
+/* Query 2- query used for second insight */
+SELECT c.country,
+       COUNT(DISTINCT c.customerid) AS
+total_customer,
+       COUNT(i.invoiceid) AS total_invoices,
+       SUM(i.total) AS total_sales
+FROM customer AS c
+JOIN invoice AS i ON c.customerid = i.customerid
+GROUP BY c.country
+ORDER BY total_sales DESC;
+
+/* Query 3 - Used for third insight */
+SELECT strftime('%Y-%m', i.invoicedate) AS month,
+       SUM(ii.unitprice * ii.quantity) AS
+total_sales
+FROM invoice AS i
+JOIN InvoiceLine AS ii ON i.invoiceid = ii.invoiceid
+GROUP BY month
+ORDER BY month;
+
+/* Query 4 - Used for fourth insight */
+SELECT c.country,
+       COUNT(DISTINCT c.customerid) AS total_customers,
+       COUNT(i.invoiceid) AS total_invoices,
+       SUM(i.total) AS total_sales
+FROM customer AS c
+JOIN invoice AS i ON c.customerid = i.customerid
+GROUP BY c.country
+ORDER BY total_sales DESC;
+
+/* Query 5 - Used for fifth insight */
+SELECT ar.Name AS Artist, COUNT(t.TrackId) AS
+TotalPurchases
+FROM artist ar
+JOIN album al ON ar.ArtistId = al.ArtistId
+JOIN track t ON al.AlbumId = t.AlbumId
+JOIN invoiceline ii ON t.TrackId = ii.TrackId
+GROUP BY ar.ArtistId
+ORDER BY TotalPurchases DESC
+LIMIT 5;
